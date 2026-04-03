@@ -133,11 +133,33 @@ export const getTeacherSyllabuses = async (req: Request, res: Response) => {
     const teacherId = (req as any).user?.id;
 
     const result = await pool.query(
-      `SELECT s.*, c.name as class_name, c.grade, c.section, sb.name as subject_name
+      `SELECT
+         s.*,
+         c.name as class_name,
+         c.grade,
+         c.section,
+         sb.name as subject_name,
+         COALESCE(
+           json_agg(
+             json_build_object(
+               'id', st.id,
+               'topicNumber', st.topic_number,
+               'title', st.title,
+               'description', st.description,
+               'status', st.status,
+               'coveredDate', st.covered_date,
+               'notes', st.notes
+             )
+             ORDER BY st.topic_number
+           ) FILTER (WHERE st.id IS NOT NULL),
+           '[]'::json
+         ) as topics
        FROM syllabuses s
        JOIN classes c ON s.class_id = c.id
        JOIN subjects sb ON s.subject_id = sb.id
+       LEFT JOIN syllabus_topics st ON s.id = st.syllabus_id
        WHERE s.teacher_id = $1
+       GROUP BY s.id, c.name, c.grade, c.section, sb.name
        ORDER BY s.created_at DESC`,
       [teacherId]
     );
@@ -159,15 +181,30 @@ export const getStudentSyllabus = async (req: Request, res: Response) => {
     }
 
     const result = await pool.query(
-      `SELECT s.*, 
-              array_agg(json_build_object('id', st.id, 'topicNumber', st.topic_number, 'title', st.title, 'status', st.status, 'description', st.description) 
-               ORDER BY st.topic_number) as topics,
+      `SELECT s.*,
+              c.name as class_name,
+              c.grade,
+              c.section,
+              COALESCE(
+                json_agg(
+                  json_build_object(
+                    'id', st.id,
+                    'topicNumber', st.topic_number,
+                    'title', st.title,
+                    'status', st.status,
+                    'description', st.description
+                  )
+                  ORDER BY st.topic_number
+                ) FILTER (WHERE st.id IS NOT NULL),
+                '[]'::json
+              ) as topics,
               sb.name as subject_name
        FROM syllabuses s
        LEFT JOIN syllabus_topics st ON s.id = st.syllabus_id
+       JOIN classes c ON s.class_id = c.id
        JOIN subjects sb ON s.subject_id = sb.id
        WHERE s.class_id = $1
-       GROUP BY s.id, sb.name
+       GROUP BY s.id, c.name, c.grade, c.section, sb.name
        ORDER BY sb.name`,
       [parseInt(classId as string)]
     );

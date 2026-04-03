@@ -7,7 +7,7 @@ import SearchInput from '../components/ui/SearchInput';
 import { classAPI, syllabusAPI, studentAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/ui/ToastContext';
-import { Class } from '../types';
+import { Class, Subject } from '../types';
 
 interface SyllabusTopic {
   id: number;
@@ -38,6 +38,7 @@ const Syllabus: React.FC = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
   const [classes, setClasses] = useState<Class[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const [selectedClass, setSelectedClass] = useState('');
   const [items, setItems] = useState<SyllabusRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,8 +56,12 @@ const Syllabus: React.FC = () => {
   useEffect(() => {
     const init = async () => {
       try {
-        const classRes = await classAPI.getAll();
+        const [classRes, subjectRes] = await Promise.all([
+          classAPI.getAll(),
+          classAPI.getSubjects()
+        ]);
         setClasses(classRes.data.classes || []);
+        setSubjects(subjectRes.data.subjects || []);
         if (user?.role === 'student') {
           const studentRes = await studentAPI.getById(user.id);
           const classId = studentRes.data.student?.classId;
@@ -98,6 +103,13 @@ const Syllabus: React.FC = () => {
     if (!q) return items;
     return items.filter((item) => (`${item.title} ${item.subject_name} ${item.class_name} ${item.grade} ${item.section}`).toLowerCase().includes(q));
   }, [items, search]);
+
+  const selectedClassSubjects = useMemo(() => {
+    if (!createForm.classId) {
+      return subjects;
+    }
+    return subjects;
+  }, [createForm.classId, subjects]);
 
   const updateTopicStatus = async (topicId: number, status: 'pending' | 'ongoing' | 'covered') => {
     try {
@@ -235,7 +247,12 @@ const Syllabus: React.FC = () => {
                     <option key={cls.id} value={cls.id}>{cls.name} - Grade {cls.grade} {cls.section}</option>
                   ))}
                 </select>
-                <input className="input-base" placeholder="Subject ID (for now)" value={createForm.subjectId} onChange={(e) => setCreateForm({ ...createForm, subjectId: e.target.value })} />
+                <select className="input-base" value={createForm.subjectId} onChange={(e) => setCreateForm({ ...createForm, subjectId: e.target.value })}>
+                  <option value="">Select subject</option>
+                  {selectedClassSubjects.map((subject) => (
+                    <option key={subject.id} value={subject.id}>{subject.name} ({subject.code})</option>
+                  ))}
+                </select>
                 <input className="input-base md:col-span-2" placeholder="Syllabus title" value={createForm.title} onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })} />
                 <input className="input-base md:col-span-2" placeholder="Description" value={createForm.description} onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })} />
                 <textarea
