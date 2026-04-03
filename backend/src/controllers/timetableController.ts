@@ -43,11 +43,21 @@ export const getTimetableByClass = async (req: AuthRequest, res: Response) => {
     const { classId } = req.params;
 
     const result = await query(
-            `SELECT t.id, t.class_id as classId, t.subject_id as subjectId, t.teacher_id as teacherId, t.day_of_week as dayOfWeek,
-              t.start_time as startTime, t.end_time as endTime, t.room_number as roomNumber,
-              s.name as subjectName, s.code as subjectCode,
-              u.first_name as teacherFirstName, u.last_name as teacherLastName,
-              c.name as className, c.grade, c.section
+            `SELECT t.id,
+              t.class_id as "classId",
+              t.subject_id as "subjectId",
+              t.teacher_id as "teacherId",
+              t.day_of_week as "dayOfWeek",
+              t.start_time as "startTime",
+              t.end_time as "endTime",
+              t.room_number as "roomNumber",
+              s.name as "subjectName",
+              s.code as "subjectCode",
+              u.first_name as "teacherFirstName",
+              u.last_name as "teacherLastName",
+              c.name as "className",
+              c.grade,
+              c.section
        FROM timetable t
        LEFT JOIN subjects s ON t.subject_id = s.id
        LEFT JOIN users u ON t.teacher_id = u.id
@@ -71,10 +81,19 @@ export const getTimetableByTeacher = async (req: AuthRequest, res: Response) => 
     const teacherId = req.params.teacherId || req.user?.id;
 
     const result = await query(
-            `SELECT t.id, t.class_id as classId, t.subject_id as subjectId, t.teacher_id as teacherId, t.day_of_week as dayOfWeek,
-              t.start_time as startTime, t.end_time as endTime, t.room_number as roomNumber,
-              s.name as subjectName, s.code as subjectCode,
-              c.name as className, c.grade, c.section
+            `SELECT t.id,
+              t.class_id as "classId",
+              t.subject_id as "subjectId",
+              t.teacher_id as "teacherId",
+              t.day_of_week as "dayOfWeek",
+              t.start_time as "startTime",
+              t.end_time as "endTime",
+              t.room_number as "roomNumber",
+              s.name as "subjectName",
+              s.code as "subjectCode",
+              c.name as "className",
+              c.grade,
+              c.section
        FROM timetable t
        LEFT JOIN subjects s ON t.subject_id = s.id
        LEFT JOIN classes c ON t.class_id = c.id
