@@ -17,8 +17,8 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const loggedInUser = await login(email, password);
+      navigate(loggedInUser.role === 'student' ? '/student/dashboard' : '/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to login');
     } finally {
@@ -26,10 +26,29 @@ const Login: React.FC = () => {
     }
   };
 
+  const applyDemoCredentials = (role: 'teacher' | 'student') => {
+    if (role === 'teacher') {
+      setEmail('teacher@demo.com');
+      setPassword('password123');
+      return;
+    }
+    setEmail('student1@demo.com');
+    setPassword('password123');
+  };
+
   return (
     <div className="min-h-screen px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100dvh-2rem)] max-w-7xl overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-lifted sm:rounded-[2rem] lg:grid-cols-[1.1fr_0.9fr]">
         <div className="relative hidden overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-indigo-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(120deg, rgba(15,118,110,0.88), rgba(15,23,42,0.88)), url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_28%)]" />
           <div className="relative z-10">
             <div className="mb-8 flex items-center gap-3">
@@ -112,6 +131,23 @@ const Login: React.FC = () => {
                 />
               </div>
 
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => applyDemoCredentials('student')}
+                  className="btn-secondary"
+                >
+                  Use Student Demo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyDemoCredentials('teacher')}
+                  className="btn-secondary"
+                >
+                  Use Teacher Demo
+                </button>
+              </div>
+
               <button
                 type="submit"
                 disabled={loading}
@@ -124,6 +160,7 @@ const Login: React.FC = () => {
             <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm text-slate-600">
               <p className="font-semibold text-slate-800">Demo Credentials</p>
               <p className="mt-1">Teacher: teacher@demo.com / password123</p>
+              <p className="mt-1">Student: student1@demo.com / password123</p>
               <p className="mt-1">Admin: admin@demo.com / password123</p>
             </div>
           </div>

@@ -192,7 +192,7 @@ const Students: React.FC = () => {
     showToast('Student import template downloaded', 'success');
   };
 
-  const normalizeCell = (value: string | undefined) => String(value || '').trim();
+  const normalizeCell = (value: unknown) => String(value ?? '').trim();
 
   const normalizeCSVHeader = (header: string) =>
     normalizeCell(header)
@@ -223,14 +223,14 @@ const Students: React.FC = () => {
     });
 
     return rawRows
-      .map((row) => {
+      .map((row: Record<string, unknown>) => {
         const normalized: Record<string, string> = {};
         Object.entries(row).forEach(([key, value]) => {
           normalized[String(key)] = normalizeCell(String(value ?? ''));
         });
         return normalized;
       })
-      .filter((row) => Object.values(row).some((value) => normalizeCell(value) !== ''));
+      .filter((row: Record<string, string>) => Object.values(row).some((value: string) => normalizeCell(value) !== ''));
   };
 
   const splitName = (fullName: string) => {
@@ -370,7 +370,7 @@ const Students: React.FC = () => {
         return;
       }
 
-      const studentsPayload = rows.map((row) => ({
+      const studentsPayload = rows.map((row: Record<string, string>) => ({
         className: getRowValue(row, ['className', 'class name']),
         grade: getRowValue(row, ['grade']),
         section: getRowValue(row, ['section']),
@@ -381,7 +381,18 @@ const Students: React.FC = () => {
         email: getRowValue(row, ['email']),
         phone: getRowValue(row, ['phone']),
         rollNumber: getRowValue(row, ['rollNumber', 'roll number', 'rollno', 'roll no'])
-      })).filter((row) => row.firstName || row.lastName || row.email);
+      })).filter((row: {
+        className: string;
+        grade: string;
+        section: string;
+        academicYear: string;
+        roomNumber: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone: string;
+        rollNumber: string;
+      }) => row.firstName || row.lastName || row.email);
 
       if (studentsPayload.length === 0) {
         showToast('No valid student rows found. Check headers like firstName/lastName/email or name/email.', 'error');

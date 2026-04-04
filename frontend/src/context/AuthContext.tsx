@@ -5,7 +5,7 @@ import { authAPI } from '../services/api';
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   loading: boolean;
 }
@@ -38,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setToken(newToken);
       setUser(newUser);
+      return newUser;
     } catch (error) {
       throw error;
     }
