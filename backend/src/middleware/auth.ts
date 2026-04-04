@@ -31,7 +31,15 @@ export const authorize = (...roles: string[]) => {
       return res.status(401).json({ message: 'Authentication required' });
     }
 
-    if (!roles.includes(req.user.role)) {
+    const userRole = (req.user.role || '').toLowerCase();
+    const normalizedRoles = roles.map((role) => role.toLowerCase());
+
+    // Admin has full platform access regardless of route-level role list.
+    if (userRole === 'admin') {
+      return next();
+    }
+
+    if (!normalizedRoles.includes(userRole)) {
       return res.status(403).json({ message: 'Access denied' });
     }
 
