@@ -1052,7 +1052,7 @@ const Tests: React.FC = () => {
                                         </p>
                                         <p className="text-sm text-slate-500">{submission.status || 'in_progress'}</p>
                                       </div>
-                                      <div className="grid grid-cols-3 gap-3 text-sm">
+                                      <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
                                         <div className="rounded-xl bg-slate-50 px-3 py-2 text-center">
                                           <p className="text-xs uppercase text-slate-500">Score</p>
                                           <p className="font-semibold text-slate-900">{Number(submission.score || 0)} / {Number(submission.totalScore || 0)}</p>

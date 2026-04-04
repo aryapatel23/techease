@@ -68,10 +68,10 @@ export const AttendanceReviewModal: React.FC<AttendanceReviewModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/55 p-4 backdrop-blur-sm">
+      <div className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-slate-200 bg-gradient-to-r from-white to-teal-50 px-6 py-4">
           <div>
             <h2 className="text-xl font-bold text-slate-900">Review Attendance</h2>
             <p className="text-sm text-slate-600 mt-1">
@@ -126,7 +126,7 @@ export const AttendanceReviewModal: React.FC<AttendanceReviewModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-slate-200 px-6 py-4 flex gap-3 justify-end bg-slate-50">
+        <div className="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
           <button
             onClick={onCancel}
             disabled={isSubmitting}

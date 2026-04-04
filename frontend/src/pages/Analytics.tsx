@@ -209,7 +209,7 @@ const Analytics: React.FC = () => {
     }
   };
 
-  const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+  const COLORS = ['#0f766e', '#0ea5e9', '#f59e0b', '#ef4444', '#22c55e', '#64748b'];
 
   const attendanceRateValue = Math.round(analytics?.attendanceStats?.attendancePercentage || 0);
   const supportCountValue = signals
@@ -239,7 +239,7 @@ const Analytics: React.FC = () => {
           title: 'Topics Need Revision',
           value: `${revisionTopicCountValue}`,
           hint: revisionTopicCountValue > 0 ? 'These topics need another teaching pass.' : 'Topic understanding is healthy.',
-          tone: revisionTopicCountValue > 0 ? 'text-indigo-700 bg-indigo-50' : 'text-emerald-700 bg-emerald-50'
+          tone: revisionTopicCountValue > 0 ? 'text-cyan-800 bg-cyan-50' : 'text-emerald-700 bg-emerald-50'
         }
       ]
     : [];
@@ -302,7 +302,7 @@ const Analytics: React.FC = () => {
 
         {analytics && !loading && (
           <div className="space-y-6">
-            <div className="rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 via-white to-teal-50 p-5">
+            <div className="rounded-2xl border border-cyan-200 bg-gradient-to-r from-cyan-50 via-white to-teal-50 p-5">
               <h3 className="text-lg font-semibold text-slate-900">Early Intervention Automation</h3>
               <p className="mt-1 text-sm text-slate-600">
                 Set thresholds for low/high performance and topic understanding. The system flags students and topics early so teachers can intervene on time.
@@ -365,9 +365,9 @@ const Analytics: React.FC = () => {
                       <p className="text-xs uppercase tracking-wide text-amber-700">Watchlist</p>
                       <p className="mt-1 text-2xl font-bold text-amber-800">{signals.classSummary.watchlistCount}</p>
                     </div>
-                    <div className="rounded-xl bg-indigo-50 p-4">
-                      <p className="text-xs uppercase tracking-wide text-indigo-700">Risk topics</p>
-                      <p className="mt-1 text-2xl font-bold text-indigo-800">{signals.classSummary.riskTopicCount}</p>
+                    <div className="rounded-xl bg-cyan-50 p-4">
+                      <p className="text-xs uppercase tracking-wide text-cyan-700">Risk topics</p>
+                      <p className="mt-1 text-2xl font-bold text-cyan-800">{signals.classSummary.riskTopicCount}</p>
                     </div>
                   </div>
 
@@ -418,13 +418,13 @@ const Analytics: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4">
+                    <div className="rounded-xl border border-cyan-200 bg-cyan-50 p-4">
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <h4 className="text-sm font-semibold text-indigo-900">Revision topics</h4>
-                          <p className="text-xs text-indigo-700">These topics are below the understanding threshold and should be revisited.</p>
+                          <h4 className="text-sm font-semibold text-cyan-900">Revision topics</h4>
+                          <p className="text-xs text-cyan-700">These topics are below the understanding threshold and should be revisited.</p>
                         </div>
-                        <span className="rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+                        <span className="rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-semibold text-cyan-700">
                           {revisionTopics.length} need revision
                         </span>
                       </div>
@@ -436,7 +436,7 @@ const Analytics: React.FC = () => {
                           samples: number;
                           isRisk: boolean;
                         }) => (
-                          <div key={topic.id} className="rounded-lg border border-indigo-100 bg-white px-3 py-2">
+                          <div key={topic.id} className="rounded-lg border border-cyan-100 bg-white px-3 py-2">
                             <div className="flex items-center justify-between gap-3">
                               <div>
                                 <p className="text-sm font-medium text-slate-900">{topic.topicName}</p>
@@ -509,7 +509,7 @@ const Analytics: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div className="card p-6">
+              <div className="card impact-card p-6">
                 <h3 className="mb-2 text-sm font-medium text-slate-600">
                   Total Students
                 </h3>
@@ -518,11 +518,11 @@ const Analytics: React.FC = () => {
                 </p>
               </div>
 
-              <div className="card p-6">
+              <div className="card impact-card p-6">
                 <h3 className="mb-2 text-sm font-medium text-slate-600">
                   Attendance Rate
                 </h3>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="text-3xl font-bold text-teal-700">
                   {Math.round((analytics.attendanceStats?.attendancePercentage || 0))}%
                 </p>
               </div>
@@ -540,7 +540,7 @@ const Analytics: React.FC = () => {
             {insightCards.length > 0 && (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 {insightCards.map((card) => (
-                  <div key={card.title} className={`rounded-2xl p-4 ${card.tone}`}>
+                  <div key={card.title} className={`impact-card rounded-2xl border border-white/50 p-4 shadow-sm ${card.tone}`}>
                     <p className="text-xs uppercase tracking-wide">{card.title}</p>
                     <p className="mt-1 text-2xl font-bold">{card.value}</p>
                     <p className="mt-1 text-sm opacity-90">{card.hint}</p>
@@ -578,7 +578,7 @@ const Analytics: React.FC = () => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="averagePercentage" fill="#0ea5e9" name="Average %" />
+                    <Bar dataKey="averagePercentage" fill="#0f766e" name="Average %" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -596,7 +596,7 @@ const Analytics: React.FC = () => {
                       labelLine={false}
                       label={({ grade, count }) => `${grade}: ${count}`}
                       outerRadius={80}
-                      fill="#8884d8"
+                      fill="#0ea5e9"
                       dataKey="count"
                     >
                       {analytics.gradeDistribution.map((_entry, index) => (
@@ -618,10 +618,10 @@ const Analytics: React.FC = () => {
                   {analytics.topPerformers.slice(0, 5).map((student, index) => (
                     <div
                       key={student.id}
-                      className="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+                      className="flex items-center justify-between rounded-lg bg-teal-50 p-3"
                     >
                       <div className="flex items-center">
-                        <div className="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">
+                        <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-teal-700 font-bold text-white">
                           {index + 1}
                         </div>
                         <div>
@@ -632,7 +632,7 @@ const Analytics: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg font-bold text-green-600">
+                        <p className="text-lg font-bold text-teal-700">
                           {Math.round(student.averagePercentage)}%
                         </p>
                       </div>
@@ -649,7 +649,7 @@ const Analytics: React.FC = () => {
                   {analytics.weakStudents.slice(0, 5).map((student) => (
                     <div
                       key={student.id}
-                      className="flex items-center justify-between p-3 bg-red-50 rounded-lg"
+                      className="flex items-center justify-between rounded-lg bg-rose-50 p-3"
                     >
                       <div>
                         <p className="font-medium text-gray-900">

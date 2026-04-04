@@ -296,7 +296,7 @@ const Dashboard: React.FC = () => {
 
         {user?.role === 'teacher' && (
           <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="card p-6">
+            <div className="card impact-card p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">My Classes</p>
@@ -310,7 +310,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="card p-6">
+            <div className="card impact-card p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">Total Students</p>
@@ -324,7 +324,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="card p-6">
+            <div className="card impact-card p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">Today's Classes</p>
@@ -338,7 +338,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="card p-6">
+            <div className="card impact-card p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">Attendance Today</p>

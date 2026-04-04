@@ -116,9 +116,35 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return true;
   });
 
+  const quickActions = user?.role === 'student'
+    ? [
+        {
+          label: 'Open my timetable',
+          path: '/timetable',
+          message: 'Today schedule ready'
+        },
+        {
+          label: 'View my tests',
+          path: '/tests',
+          message: 'Test workspace opened'
+        }
+      ]
+    : [
+        {
+          label: 'Mark attendance',
+          path: '/attendance',
+          message: 'Ready to mark attendance'
+        },
+        {
+          label: 'Update grades',
+          path: '/grades',
+          message: 'Open gradebook tools'
+        }
+      ];
+
   return (
     <div className="min-h-screen bg-transparent">
-      <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
+      <nav className="glass-nav sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -130,8 +156,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/dashboard')}
-                className="text-2xl font-bold text-teal-700"
+                onClick={() => navigate(resolvePath('/dashboard'))}
+                className="rounded-xl px-2 py-1.5 text-2xl font-bold text-teal-700 transition hover:bg-teal-50"
               >
                 TeachEase
               </button>
@@ -146,7 +172,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 placeholder="Global search students or classes"
               />
               {(query || searching || results.length > 0) && (
-                <div className="absolute left-0 top-12 w-full rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+                <div className="absolute left-0 top-12 w-full rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
                   {searching ? (
                     <p className="px-2 py-4 text-center text-sm text-slate-500">Searching...</p>
                   ) : results.length > 0 ? (
@@ -195,12 +221,21 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </nav>
 
       <div className="flex">
+        {sidebarOpen && (
+          <button
+            type="button"
+            aria-label="Close sidebar"
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 top-16 z-30 bg-slate-900/20 lg:hidden"
+          />
+        )}
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } fixed bottom-0 left-0 top-16 z-40 w-72 overflow-y-auto border-r border-slate-200 bg-white/95 px-3 transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0`}
+          } sidebar-shell fixed bottom-0 left-0 top-16 z-40 w-72 overflow-y-auto border-r border-slate-200 px-3 transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0`}
         >
           <nav className="mt-5 px-2">
+            <p className="section-chip mb-3">Navigation</p>
             {visibleMenuItems.map((item) => {
               const Icon = item.icon;
               const targetPath = resolvePath(item.path);
@@ -225,26 +260,19 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Quick actions</p>
               <div className="mt-3 flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigate('/attendance');
-                    showToast('Ready to mark attendance', 'info');
-                  }}
-                  className="btn-secondary justify-start"
-                >
-                  Mark attendance
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigate('/grades');
-                    showToast('Open gradebook tools', 'info');
-                  }}
-                  className="btn-secondary justify-start"
-                >
-                  Update grades
-                </button>
+                {quickActions.map((action) => (
+                  <button
+                    key={action.label}
+                    type="button"
+                    onClick={() => {
+                      navigate(resolvePath(action.path));
+                      showToast(action.message, 'info');
+                    }}
+                    className="btn-secondary justify-start"
+                  >
+                    {action.label}
+                  </button>
+                ))}
               </div>
             </div>
           </nav>
