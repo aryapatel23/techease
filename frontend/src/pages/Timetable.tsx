@@ -47,8 +47,8 @@ const Timetable: React.FC = () => {
 
   const fetchTimetable = async () => {
     try {
-      if (user?.role === 'teacher') {
-        const response = await timetableAPI.getByTeacher();
+      if (user?.role === 'teacher' || user?.role === 'admin') {
+        const response = await timetableAPI.getByTeacher(user?.role === 'admin' ? undefined : user?.id);
         setTimetable((response.data.timetable || []).map((item: any) => ({
           ...item,
           dayOfWeek: Number(item.dayOfWeek ?? item.day_of_week),

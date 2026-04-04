@@ -78,10 +78,11 @@ export const getTimetableByClass = async (req: AuthRequest, res: Response) => {
 
 export const getTimetableByTeacher = async (req: AuthRequest, res: Response) => {
   try {
-    const teacherId = req.params.teacherId || req.user?.id;
+    const requestedTeacherId = req.params.teacherId ? Number(req.params.teacherId) : null;
+    const isAdmin = req.user?.role === 'admin';
 
-    const result = await query(
-            `SELECT t.id,
+    const queryText = isAdmin && !requestedTeacherId
+      ? `SELECT t.id,
               t.class_id as "classId",
               t.subject_id as "subjectId",
               t.teacher_id as "teacherId",
@@ -94,13 +95,31 @@ export const getTimetableByTeacher = async (req: AuthRequest, res: Response) => 
               c.name as "className",
               c.grade,
               c.section
-       FROM timetable t
-       LEFT JOIN subjects s ON t.subject_id = s.id
-       LEFT JOIN classes c ON t.class_id = c.id
-       WHERE t.teacher_id = $1
-       ORDER BY t.day_of_week, t.start_time`,
-      [teacherId]
-    );
+         FROM timetable t
+         LEFT JOIN subjects s ON t.subject_id = s.id
+         LEFT JOIN classes c ON t.class_id = c.id
+         ORDER BY t.day_of_week, t.start_time`
+      : `SELECT t.id,
+              t.class_id as "classId",
+              t.subject_id as "subjectId",
+              t.teacher_id as "teacherId",
+              t.day_of_week as "dayOfWeek",
+              t.start_time as "startTime",
+              t.end_time as "endTime",
+              t.room_number as "roomNumber",
+              s.name as "subjectName",
+              s.code as "subjectCode",
+              c.name as "className",
+              c.grade,
+              c.section
+         FROM timetable t
+         LEFT JOIN subjects s ON t.subject_id = s.id
+         LEFT JOIN classes c ON t.class_id = c.id
+         WHERE t.teacher_id = $1
+         ORDER BY t.day_of_week, t.start_time`;
+
+    const teacherId = requestedTeacherId || req.user?.id;
+    const result = await query(queryText, isAdmin && !requestedTeacherId ? [] : [teacherId]);
 
     res.json({
       timetable: result.rows

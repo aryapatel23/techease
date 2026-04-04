@@ -146,6 +146,7 @@ const getThumbnailUrl = (videoId: string) => `https://i.ytimg.com/vi/${videoId}/
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const isStaff = user?.role === 'teacher' || user?.role === 'admin';
   const [stats, setStats] = useState<DashboardStats>({});
   const [todaysTimetable, setTodaysTimetable] = useState<Timetable[]>([]);
   const [attentionStudents, setAttentionStudents] = useState<DashboardAttentionStudent[]>([]);
@@ -162,9 +163,9 @@ const Dashboard: React.FC = () => {
       const statsRes = await analyticsAPI.getDashboardStats();
       setStats(normalizeDashboardStats(statsRes.data));
 
-      if (user?.role === 'teacher') {
+      if (isStaff) {
         const [timetableRes, classesRes] = await Promise.all([
-          timetableAPI.getByTeacher(),
+          timetableAPI.getByTeacher(user?.role === 'admin' ? undefined : user?.id),
           classAPI.getAll()
         ]);
 
@@ -285,7 +286,7 @@ const Dashboard: React.FC = () => {
           title={`Welcome back, ${user?.firstName || 'Teacher'}`}
           description="Today’s overview and your next high-impact actions"
           actions={
-            user?.role === 'teacher' ? (
+            isStaff ? (
               <>
                 <Link to="/attendance" className="btn-secondary">Quick Attendance</Link>
                 <Link to="/grades" className="btn-primary">Open Gradebook</Link>
@@ -294,7 +295,7 @@ const Dashboard: React.FC = () => {
           }
         />
 
-        {user?.role === 'teacher' && (
+        {isStaff && (
           <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
             <div className="soft-card stat-strip p-6">
               <div className="flex items-center justify-between">
@@ -354,7 +355,7 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {user?.role === 'teacher' && (
+        {isStaff && (
           <div className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
             <div className="soft-card xl:col-span-2 overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
@@ -420,7 +421,7 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {user?.role === 'teacher' && (
+        {isStaff && (
           <div className="mb-8 soft-card p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
@@ -642,12 +643,7 @@ const Dashboard: React.FC = () => {
           </>
         )}
 
-        {user?.role === 'admin' && (
-          <EmptyState
-            title="Admin analytics coming next"
-            description="You can still use classes, students, and analytics sections for daily operations."
-          />
-        )}
+
       </div>
     </Layout>
   );

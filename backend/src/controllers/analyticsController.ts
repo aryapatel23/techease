@@ -264,33 +264,47 @@ export const getDashboardStats = async (req: AuthRequest, res: Response) => {
     const userId = req.user?.id;
     const userRole = req.user?.role;
 
-    if (userRole === 'teacher') {
+    if (userRole === 'teacher' || userRole === 'admin') {
       const myClasses = await query(
-        'SELECT COUNT(*) as total_classes FROM classes WHERE teacher_id = $1',
-        [userId]
+        userRole === 'teacher'
+          ? 'SELECT COUNT(*) as total_classes FROM classes WHERE teacher_id = $1'
+          : 'SELECT COUNT(*) as total_classes FROM classes',
+        userRole === 'teacher' ? [userId] : []
       );
 
       const myStudents = await query(
-        `SELECT COUNT(DISTINCT e.student_id) as total_students
-         FROM classes c
-         JOIN enrollments e ON c.id = e.class_id
-         WHERE c.teacher_id = $1 AND e.status = 'active'`,
-        [userId]
+        userRole === 'teacher'
+          ? `SELECT COUNT(DISTINCT e.student_id) as total_students
+             FROM classes c
+             JOIN enrollments e ON c.id = e.class_id
+             WHERE c.teacher_id = $1 AND e.status = 'active'`
+          : `SELECT COUNT(DISTINCT e.student_id) as total_students
+             FROM enrollments e
+             WHERE e.status = 'active'`,
+        userRole === 'teacher' ? [userId] : []
       );
 
       const todaysClasses = await query(
-        `SELECT COUNT(*) as today_classes
-         FROM timetable t
-         WHERE t.teacher_id = $1 AND t.day_of_week = EXTRACT(DOW FROM CURRENT_DATE)`,
-        [userId]
+        userRole === 'teacher'
+          ? `SELECT COUNT(*) as today_classes
+             FROM timetable t
+             WHERE t.teacher_id = $1 AND t.day_of_week = EXTRACT(DOW FROM CURRENT_DATE)`
+          : `SELECT COUNT(*) as today_classes
+             FROM timetable t
+             WHERE t.day_of_week = EXTRACT(DOW FROM CURRENT_DATE)`,
+        userRole === 'teacher' ? [userId] : []
       );
 
       const recentAttendance = await query(
-        `SELECT COUNT(*) as records_today
-         FROM attendance a
-         JOIN classes c ON a.class_id = c.id
-         WHERE c.teacher_id = $1 AND a.date = CURRENT_DATE`,
-        [userId]
+        userRole === 'teacher'
+          ? `SELECT COUNT(*) as records_today
+             FROM attendance a
+             JOIN classes c ON a.class_id = c.id
+             WHERE c.teacher_id = $1 AND a.date = CURRENT_DATE`
+          : `SELECT COUNT(*) as records_today
+             FROM attendance a
+             WHERE a.date = CURRENT_DATE`,
+        userRole === 'teacher' ? [userId] : []
       );
 
       res.json({

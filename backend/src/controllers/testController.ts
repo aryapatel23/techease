@@ -552,6 +552,8 @@ export const getClassTests = async (req: Request, res: Response) => {
       params.push(userId);
       queryText += ` AND t.teacher_id = $${params.length}`;
       queryText += ` AND t.status IN ('draft', 'scheduled', 'active', 'completed', 'archived')`;
+    } else if (userRole === 'admin') {
+      queryText += ` AND t.status IN ('draft', 'scheduled', 'active', 'completed', 'archived')`;
     } else {
       queryText += ` AND t.status IN ('scheduled', 'active', 'completed')`;
     }
@@ -761,10 +763,17 @@ export const saveTestProgress = async (req: Request, res: Response) => {
   try {
     const { testId } = req.params;
     const { answers } = req.body;
-    const studentId = (req as any).user?.id;
+    const userId = (req as any).user?.id;
+    const userRole = (req as any).user?.role;
+    const requestedStudentId = Number(req.body?.studentId || 0);
+    const studentId = userRole === 'admin' && requestedStudentId > 0 ? requestedStudentId : userId;
 
     if (!studentId || !Array.isArray(answers)) {
       return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    if (userRole === 'admin' && !requestedStudentId) {
+      return res.status(400).json({ message: 'studentId is required for admin progress operations' });
     }
 
     await pool.query('BEGIN');
@@ -782,7 +791,7 @@ export const saveTestProgress = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Test not found for this student' });
     }
 
-    if (!isStudentWindowOpen(testResult.rows[0])) {
+    if (userRole !== 'admin' && !isStudentWindowOpen(testResult.rows[0])) {
       await pool.query('ROLLBACK');
       return res.status(403).json({ message: 'This test is not available for progress save right now.' });
     }
@@ -851,7 +860,14 @@ export const saveTestProgress = async (req: Request, res: Response) => {
 export const getStudentTestProgress = async (req: Request, res: Response) => {
   try {
     const { testId } = req.params;
-    const studentId = (req as any).user?.id;
+    const userId = (req as any).user?.id;
+    const userRole = (req as any).user?.role;
+    const requestedStudentId = Number(req.query?.studentId || 0);
+    const studentId = userRole === 'admin' && requestedStudentId > 0 ? requestedStudentId : userId;
+
+    if (userRole === 'admin' && !requestedStudentId) {
+      return res.status(400).json({ message: 'studentId query parameter is required for admin progress lookups' });
+    }
 
     const testResult = await pool.query(
       `SELECT t.id, t.class_id, t.status, t.start_time, t.end_time
@@ -865,7 +881,7 @@ export const getStudentTestProgress = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Test not found for this student' });
     }
 
-    if (!isStudentWindowOpen(testResult.rows[0])) {
+    if (userRole !== 'admin' && !isStudentWindowOpen(testResult.rows[0])) {
       return res.status(403).json({ message: 'This test is not currently available.' });
     }
 

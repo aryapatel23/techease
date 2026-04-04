@@ -11,6 +11,7 @@ export const seedDatabase = async () => {
       `INSERT INTO users (email, password, first_name, last_name, role, phone)
        VALUES
          ('teacher@demo.com', $1, 'John', 'Smith', 'teacher', '123-456-7890'),
+         ('admin@demo.com', $1, 'Admin', 'User', 'admin', '123-456-7800'),
          ('student1@demo.com', $1, 'Alice', 'Johnson', 'student', '123-456-7891'),
          ('student2@demo.com', $1, 'Bob', 'Williams', 'student', '123-456-7892'),
          ('student3@demo.com', $1, 'Charlie', 'Brown', 'student', '123-456-7893'),
@@ -394,6 +395,7 @@ export const seedDatabase = async () => {
 
     console.log('Database seeded successfully!');
     console.log('\nDemo Login Credentials:');
+    console.log('Admin: admin@demo.com / password123');
     console.log('Teacher: teacher@demo.com / password123');
     console.log('Student: student1@demo.com / password123');
   } catch (error) {

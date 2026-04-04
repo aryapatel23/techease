@@ -124,6 +124,7 @@ const Login: React.FC = () => {
             <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm text-slate-600">
               <p className="font-semibold text-slate-800">Demo Credentials</p>
               <p className="mt-1">Teacher: teacher@demo.com / password123</p>
+              <p className="mt-1">Admin: admin@demo.com / password123</p>
             </div>
           </div>
         </div>
