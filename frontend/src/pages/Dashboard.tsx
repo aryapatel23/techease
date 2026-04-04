@@ -296,7 +296,7 @@ const Dashboard: React.FC = () => {
 
         {user?.role === 'teacher' && (
           <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="card p-6">
+            <div className="soft-card stat-strip p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">My Classes</p>
@@ -310,7 +310,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="card p-6">
+            <div className="soft-card stat-strip p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">Total Students</p>
@@ -324,7 +324,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="card p-6">
+            <div className="soft-card stat-strip p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">Today's Classes</p>
@@ -338,7 +338,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="card p-6">
+            <div className="soft-card stat-strip p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">Attendance Today</p>
@@ -356,12 +356,12 @@ const Dashboard: React.FC = () => {
 
         {user?.role === 'teacher' && (
           <div className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
-            <div className="card xl:col-span-2">
-              <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+            <div className="soft-card xl:col-span-2 overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
                 <h2 className="text-xl font-semibold text-slate-900">
                   Today’s Overview • {getDayName(new Date().getDay())}
                 </h2>
-                <Link to="/timetable" className="text-sm font-semibold text-teal-700">View Week</Link>
+                <Link to="/timetable" className="premium-pill">View Week</Link>
               </div>
               <div className="p-6">
                 {todaysTimetable.length > 0 ? (
@@ -369,7 +369,7 @@ const Dashboard: React.FC = () => {
                     {todaysTimetable.map((item) => (
                       <div
                         key={item.id}
-                        className="flex flex-col justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center"
+                        className="flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg md:flex-row md:items-center"
                       >
                         <div>
                           <h3 className="font-semibold text-slate-900">{item.subjectName}</h3>
@@ -393,7 +393,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="card p-6">
+            <div className="soft-card p-6">
               <div className="mb-4 flex items-center gap-2">
                 <ListTodo className="h-5 w-5 text-teal-700" />
                 <h2 className="text-lg font-semibold text-slate-900">Pending Tasks</h2>
@@ -403,7 +403,7 @@ const Dashboard: React.FC = () => {
                   <Link
                     key={task.label}
                     to={task.href}
-                    className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-3 transition hover:bg-slate-50"
+                    className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-3 py-3 transition-all hover:-translate-y-0.5 hover:border-brand-200 hover:bg-brand-50 hover:shadow-sm"
                   >
                     <div>
                       <p className="text-sm text-slate-600">{task.label}</p>
@@ -412,7 +412,7 @@ const Dashboard: React.FC = () => {
                     <ArrowUpRight className="h-4 w-4 text-slate-500" />
                   </Link>
                 ))}
-                <div className="rounded-xl bg-teal-50 p-3 text-sm text-teal-800">
+                <div className="rounded-2xl border border-brand-100 bg-brand-50 p-3 text-sm text-brand-800">
                   Tip: mark attendance right after each session to keep analytics accurate.
                 </div>
               </div>
@@ -421,23 +421,23 @@ const Dashboard: React.FC = () => {
         )}
 
         {user?.role === 'teacher' && (
-          <div className="mb-8 card p-6">
+          <div className="mb-8 soft-card p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-rose-700" />
                 <h2 className="text-lg font-semibold text-slate-900">Students Needing Attention</h2>
               </div>
-              <Link to="/analytics" className="text-sm font-semibold text-teal-700">Open Full Analytics</Link>
+              <Link to="/analytics" className="premium-pill">Open Full Analytics</Link>
             </div>
 
             {attentionStudents.length === 0 ? (
-              <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">
+              <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800">
                 Great work. No critical or watchlist students detected with the current thresholds.
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
                 {attentionStudents.map((student) => (
-                  <div key={`${student.classId}-${student.id}`} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <div key={`${student.classId}-${student.id}`} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg">
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="font-semibold text-slate-900">
@@ -450,7 +450,7 @@ const Dashboard: React.FC = () => {
                           Overall {Math.round(student.overallPercentage)}% • Attendance {Math.round(student.attendancePercentage)}%
                         </p>
                       </div>
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${student.status === 'critical' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${student.status === 'critical' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
                         {student.status}
                       </span>
                     </div>
@@ -471,7 +471,7 @@ const Dashboard: React.FC = () => {
         {user?.role === 'student' && (
           <>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div className="card p-6">
+              <div className="soft-card stat-strip p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600">Enrolled Classes</p>
@@ -485,7 +485,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="card p-6">
+              <div className="soft-card stat-strip p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600">Attendance</p>
@@ -499,7 +499,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="card p-6">
+              <div className="soft-card stat-strip p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600">Average Grade</p>
@@ -514,34 +514,34 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-6 card p-6">
+            <div className="mt-6 soft-card p-6">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <h2 className="text-lg font-semibold text-slate-900">Personal Learning Plan</h2>
                   <p className="text-sm text-slate-600">Focused in-portal study actions for your weaker subjects.</p>
                 </div>
-                <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
+                <span className="premium-pill">
                   Below {STUDENT_LEARNING_THRESHOLD}%
                 </span>
               </div>
 
               {studentLearningTopics.length === 0 ? (
-                <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800">
                   Great progress. No weak subjects detected right now.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {studentLearningTopics.map((topic) => (
-                    <div key={topic.subjectName} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div key={topic.subjectName} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg">
                       <p className="font-semibold text-slate-900">{topic.subjectName}</p>
                       <p className="mt-1 text-sm text-slate-600">
                         Current average: {Math.round(topic.averagePercentage)}% • Assessments: {topic.totalAssessments}
                       </p>
                       <div className="mt-3 flex items-center gap-3 text-xs font-semibold">
-                        <Link to="/syllabus" className="inline-flex items-center rounded-lg bg-teal-600 px-3 py-1.5 text-white transition hover:bg-teal-700">
+                        <Link to="/syllabus" className="inline-flex items-center rounded-lg bg-brand-600 px-3 py-1.5 text-white transition hover:bg-brand-700">
                           Study Syllabus
                         </Link>
-                        <Link to="/tests" className="inline-flex items-center rounded-lg bg-slate-700 px-3 py-1.5 text-white transition hover:bg-slate-800">
+                        <Link to="/tests" className="inline-flex items-center rounded-lg bg-slate-800 px-3 py-1.5 text-white transition hover:bg-slate-900">
                           Practice Test
                         </Link>
                       </div>
@@ -551,7 +551,7 @@ const Dashboard: React.FC = () => {
               )}
             </div>
 
-            <div className="mt-6 card p-6">
+            <div className="mt-6 soft-card p-6">
               <div className="mb-4">
                 <h2 className="text-lg font-semibold text-slate-900">Recommended Video Lessons (In Portal)</h2>
                 <p className="text-sm text-slate-600">
@@ -570,7 +570,7 @@ const Dashboard: React.FC = () => {
                     const recommendations = getVideoRecommendationsForTopic(topic.subjectName, problem.key);
 
                     return (
-                      <div key={`video-${topic.subjectName}`} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                      <div key={`video-${topic.subjectName}`} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                         <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                           <div>
                             <p className="font-semibold text-slate-900">{topic.subjectName}</p>
@@ -585,7 +585,7 @@ const Dashboard: React.FC = () => {
 
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                           {recommendations.map((video) => (
-                            <div key={`${topic.subjectName}-${video.videoId}-${video.title}`} className="rounded-xl border border-slate-200 bg-white p-3">
+                            <div key={`${topic.subjectName}-${video.videoId}-${video.title}`} className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg">
                               <p className="mb-2 text-sm font-semibold text-slate-800">{video.title}</p>
                               <p className="mb-2 text-xs text-slate-500">Recommended for: {video.recommendedFor}</p>
                               <button
@@ -596,11 +596,11 @@ const Dashboard: React.FC = () => {
                                 <img
                                   src={getThumbnailUrl(video.videoId)}
                                   alt={`${video.title} thumbnail`}
-                                  className="h-56 w-full object-cover transition duration-200 group-hover:scale-[1.02]"
+                                  className="h-44 w-full object-cover transition duration-200 group-hover:scale-[1.02] sm:h-56"
                                   loading="lazy"
                                 />
-                                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/35 opacity-100 transition group-hover:bg-slate-900/45">
-                                  <span className="rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900">
+                                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/25 opacity-100 transition group-hover:bg-slate-900/35">
+                                  <span className="rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm">
                                     Play Video
                                   </span>
                                 </div>
@@ -616,9 +616,9 @@ const Dashboard: React.FC = () => {
             </div>
 
             {activeVideo && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 p-4">
-                <div className="w-full max-w-4xl rounded-2xl bg-white p-4 shadow-2xl">
-                  <div className="mb-3 flex items-start justify-between gap-3">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/60 p-3 backdrop-blur-sm sm:items-center sm:p-4">
+                <div className="my-4 w-full max-w-4xl rounded-2xl bg-white p-3 shadow-lifted sm:my-0 sm:rounded-[1.75rem] sm:p-4">
+                  <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <h3 className="text-lg font-semibold text-slate-900">{activeVideo.title}</h3>
                       <p className="text-sm text-slate-600">{activeVideo.subject} • {activeVideo.problemType}</p>
@@ -629,7 +629,7 @@ const Dashboard: React.FC = () => {
                   </div>
                   <div className="overflow-hidden rounded-xl border border-slate-200">
                     <iframe
-                      className="h-[420px] w-full"
+                      className="h-[220px] w-full sm:h-[320px] lg:h-[420px]"
                       src={`https://www.youtube-nocookie.com/embed/${activeVideo.videoId}?autoplay=1&rel=0`}
                       title={`Video player: ${activeVideo.title}`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

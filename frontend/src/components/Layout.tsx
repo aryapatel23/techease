@@ -117,23 +117,26 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   });
 
   return (
-    <div className="min-h-screen bg-transparent">
-      <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between gap-4">
+    <div className="min-h-screen bg-transparent text-slate-900">
+      <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/85 backdrop-blur-xl">
+        <div className="page-shell">
+          <div className="flex h-20 items-center justify-between gap-4 py-3">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="mr-1 rounded-lg p-1 text-slate-600 transition hover:bg-slate-100 lg:hidden"
+                className="mr-1 rounded-2xl p-2 text-slate-600 transition hover:bg-slate-100 lg:hidden"
               >
                 {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
               <button
                 type="button"
                 onClick={() => navigate('/dashboard')}
-                className="text-2xl font-bold text-teal-700"
+                className="flex items-center gap-2 text-xl font-bold text-brand-700 sm:text-2xl"
               >
-                TeachEase
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-600 text-sm font-bold text-white shadow-premium">
+                  T
+                </span>
+                <span className="hidden sm:inline">TeachEase</span>
               </button>
             </div>
 
@@ -142,11 +145,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                className="input-base pl-9"
+                className="input-base pl-10"
                 placeholder="Global search students or classes"
               />
               {(query || searching || results.length > 0) && (
-                <div className="absolute left-0 top-12 w-full rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+                <div className="absolute left-0 top-14 w-full rounded-3xl border border-slate-200 bg-white p-2 shadow-lifted">
                   {searching ? (
                     <p className="px-2 py-4 text-center text-sm text-slate-500">Searching...</p>
                   ) : results.length > 0 ? (
@@ -184,7 +187,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </div>
               <button
                 onClick={handleLogout}
-                className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50"
+                className="rounded-2xl border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
                 title="Logout"
               >
                 <LogOut size={20} />
@@ -195,10 +198,19 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </nav>
 
       <div className="flex">
+        {sidebarOpen ? (
+          <button
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 z-30 bg-slate-900/30 backdrop-blur-[1px] lg:hidden"
+          />
+        ) : null}
+
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } fixed bottom-0 left-0 top-16 z-40 w-72 overflow-y-auto border-r border-slate-200 bg-white/95 px-3 transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0`}
+          } fixed bottom-0 left-0 top-20 z-40 w-[86vw] max-w-sm overflow-y-auto border-r border-slate-100 bg-white/95 px-3 backdrop-blur-xl transition-transform duration-300 ease-in-out lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:w-80 lg:max-w-none lg:translate-x-0`}
         >
           <nav className="mt-5 px-2">
             {visibleMenuItems.map((item) => {
@@ -212,9 +224,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   onClick={() => setSidebarOpen(false)}
                   className={`${
                     isActive
-                      ? 'bg-teal-50 text-teal-700'
-                      : 'text-slate-700 hover:bg-slate-100'
-                  } group mb-1 flex items-center rounded-xl px-3 py-2.5 text-sm font-medium`}
+                      ? 'border border-brand-100 bg-brand-50 text-brand-700 shadow-sm'
+                      : 'border border-transparent text-slate-700 hover:border-slate-200 hover:bg-slate-50'
+                  } group mb-1 flex items-center rounded-2xl px-3 py-3 text-sm font-medium transition-all duration-200`}
                 >
                   <Icon className="mr-3 h-5 w-5" />
                   {item.label}
@@ -222,8 +234,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               );
             })}
 
-            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Quick actions</p>
+            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-4 shadow-soft">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Quick actions</p>
               <div className="mt-3 flex flex-col gap-2">
                 <button
                   type="button"
@@ -250,8 +262,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </nav>
         </aside>
 
-        <main className="flex-1 p-4 md:p-6">
-          <div className="mx-auto max-w-7xl">{children}</div>
+        <main className="flex-1 px-3 py-4 sm:px-4 md:px-6 md:py-6">
+          <div className="page-shell">{children}</div>
         </main>
       </div>
     </div>

@@ -16,7 +16,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, placeholder = 'Search.
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="input-base pl-9"
+        className="input-base pl-10"
       />
     </div>
   );

@@ -16,9 +16,9 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
 const toastStyles: Record<ToastType, string> = {
-  success: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-  error: 'border-rose-200 bg-rose-50 text-rose-800',
-  info: 'border-sky-200 bg-sky-50 text-sky-800'
+  success: 'border-emerald-200 bg-white text-emerald-800',
+  error: 'border-rose-200 bg-white text-rose-800',
+  info: 'border-brand-200 bg-white text-brand-700'
 };
 
 const toastIcons: Record<ToastType, React.ReactNode> = {
@@ -52,13 +52,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-start gap-3 rounded-xl border px-3 py-3 text-sm shadow-lg ${toastStyles[toast.type]}`}
+            className={`pointer-events-auto flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm shadow-lifted backdrop-blur-xl ${toastStyles[toast.type]}`}
           >
             <div className="mt-0.5">{toastIcons[toast.type]}</div>
             <p className="flex-1 leading-relaxed">{toast.message}</p>
             <button
               type="button"
-              className="rounded p-0.5 text-current opacity-70 transition hover:opacity-100"
+              className="rounded-lg p-1 text-current opacity-70 transition hover:bg-slate-50 hover:opacity-100"
               onClick={() => removeToast(toast.id)}
               aria-label="Dismiss notification"
             >

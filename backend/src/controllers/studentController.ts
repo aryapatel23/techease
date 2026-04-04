@@ -49,6 +49,116 @@ export const createStudent = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const bulkCreateStudents = async (req: AuthRequest, res: Response) => {
+  try {
+    const { students, classId, defaultPassword, classInfo } = req.body;
+
+    if (!Array.isArray(students) || students.length === 0) {
+      return res.status(400).json({ message: 'Student rows are required for bulk import' });
+    }
+
+    const passwordToUse = String(defaultPassword || '').trim() || 'password123';
+    const hashedPassword = await bcrypt.hash(passwordToUse, 10);
+
+    let targetClassId = classId ? Number(classId) : null;
+
+    if (!targetClassId) {
+      const resolvedClassName = String(classInfo?.name || classInfo?.className || '').trim();
+      const resolvedGrade = String(classInfo?.grade || '').trim();
+      const resolvedSection = String(classInfo?.section || '').trim();
+      const resolvedAcademicYear = String(classInfo?.academicYear || '2024-2025').trim();
+      const resolvedRoomNumber = String(classInfo?.roomNumber || '').trim();
+
+      if (!resolvedClassName || !resolvedGrade || !resolvedSection) {
+        return res.status(400).json({
+          message: 'Class details are required when a class is not selected. Include className, grade, and section in the file or choose a class first.'
+        });
+      }
+
+      const existingClass = await query(
+        `SELECT id FROM classes
+         WHERE LOWER(name) = LOWER($1)
+           AND grade = $2
+           AND section = $3
+           AND academic_year = $4
+         LIMIT 1`,
+        [resolvedClassName, resolvedGrade, resolvedSection, resolvedAcademicYear]
+      );
+
+      if (existingClass.rows.length > 0) {
+        targetClassId = Number(existingClass.rows[0].id);
+      } else {
+        const classResult = await query(
+          `INSERT INTO classes (name, grade, section, academic_year, teacher_id, room_number)
+           VALUES ($1, $2, $3, $4, $5, $6)
+           RETURNING id`,
+          [resolvedClassName, resolvedGrade, resolvedSection, resolvedAcademicYear, req.user?.id || null, resolvedRoomNumber || null]
+        );
+
+        targetClassId = Number(classResult.rows[0].id);
+      }
+    }
+
+    const created: Array<{ email: string; studentId: number; rollNumber: string | null }> = [];
+    const skipped: Array<{ email?: string; reason: string }> = [];
+
+    for (const rawStudent of students) {
+      const firstName = String(rawStudent?.firstName || '').trim();
+      const lastName = String(rawStudent?.lastName || '').trim();
+      const email = String(rawStudent?.email || '').trim();
+      const phone = String(rawStudent?.phone || '').trim();
+      const rollNumber = String(rawStudent?.rollNumber || '').trim();
+
+      if (!firstName || !lastName || !email) {
+        skipped.push({ email: email || undefined, reason: 'Missing first name, last name, or email' });
+        continue;
+      }
+
+      const existingUser = await query('SELECT id FROM users WHERE email = $1', [email]);
+      if (existingUser.rows.length > 0) {
+        skipped.push({ email, reason: 'Email already exists' });
+        continue;
+      }
+
+      const userResult = await query(
+        `INSERT INTO users (email, password, first_name, last_name, role, phone)
+         VALUES ($1, $2, $3, $4, 'student', $5)
+         RETURNING id, email`,
+        [email, hashedPassword, firstName, lastName, phone || null]
+      );
+
+      const student = userResult.rows[0];
+
+      await query(
+        `INSERT INTO enrollments (student_id, class_id, roll_number)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (student_id, class_id)
+         DO UPDATE SET roll_number = EXCLUDED.roll_number, status = 'active', updated_at = CURRENT_TIMESTAMP`,
+        [student.id, targetClassId, rollNumber || null]
+      );
+
+      created.push({
+        email: student.email,
+        studentId: student.id,
+        rollNumber: rollNumber || null
+      });
+    }
+
+    res.status(201).json({
+      message: 'Bulk student import completed',
+      createdCount: created.length,
+      skippedCount: skipped.length,
+      created,
+      skipped,
+      defaultPasswordUsed: passwordToUse,
+      classId: targetClassId
+    });
+  } catch (error) {
+    console.error('Bulk create students error:', error);
+    res.status(500).json({ message: 'Error importing students' });
+  }
+};
+
 export const getAllStudents = async (req: AuthRequest, res: Response) => {
   try {
     const { classId, search } = req.query;

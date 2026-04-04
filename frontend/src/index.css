@@ -6,14 +6,17 @@
 
 @layer base {
   :root {
-    --bg: #f4f7fb;
+    --bg: #ffffff;
     --surface: #ffffff;
     --surface-muted: #f8fafc;
-    --border: #dbe4ee;
+    --surface-elevated: #ffffff;
+    --border: #e5e7eb;
     --text: #0f172a;
     --text-muted: #475569;
-    --brand: #0f766e;
-    --brand-soft: #ccfbf1;
+    --brand: #4f46e5;
+    --brand-soft: #e0e7ff;
+    --brand-soft-strong: #c7d2fe;
+    --brand-dark: #312e81;
     --danger: #dc2626;
     --warning: #d97706;
     --success: #15803d;
@@ -28,8 +31,9 @@
     min-height: 100vh;
     font-family: 'Manrope', 'Segoe UI', sans-serif;
     background:
-      radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.08), transparent 35%),
-      radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.08), transparent 30%),
+      linear-gradient(to bottom, rgba(79, 70, 229, 0.04), transparent 120px),
+      radial-gradient(circle at top left, rgba(99, 102, 241, 0.05), transparent 32%),
+      radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.035), transparent 30%),
       var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
@@ -47,27 +51,47 @@
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-slate-200/80 bg-white shadow-sm;
+    @apply rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 40px rgba(15, 23, 42, 0.06);
+  }
+
+  .card-hover {
+    @apply hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-xl;
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
   }
 
   .input-base {
-    @apply w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100;
+    @apply w-full rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 placeholder:text-slate-400 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-[42px] items-center justify-center rounded-2xl bg-indigo-600 px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-sm;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-[42px] items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-sm;
   }
-}
 
-body {
-  margin: 0;
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  .glass-panel {
+    @apply border border-white/60 bg-white/80 backdrop-blur-xl;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+  }
+
+  .page-shell {
+    @apply mx-auto max-w-7xl px-3 sm:px-6 lg:px-8;
+  }
+
+  .stat-strip {
+    @apply border-t-4 border-indigo-500;
+  }
+
+  .soft-card {
+    @apply card card-hover;
+  }
+
+  .premium-pill {
+    @apply inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700;
+  }
 }
 
 code {

@@ -411,19 +411,19 @@ const Grades: React.FC = () => {
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-900">
                         {isEditing ? (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5 sm:gap-2">
                             <input
                               type="number"
                               value={inlineForm.marksObtained}
                               onChange={(e) => setInlineForm({ ...inlineForm, marksObtained: e.target.value })}
-                              className="w-20 rounded-lg border border-slate-300 px-2 py-1"
+                              className="w-14 rounded-lg border border-slate-300 px-2 py-1 text-xs sm:w-20 sm:text-sm"
                             />
-                            <span>/</span>
+                            <span className="text-xs sm:text-sm">/</span>
                             <input
                               type="number"
                               value={inlineForm.maxMarks}
                               onChange={(e) => setInlineForm({ ...inlineForm, maxMarks: e.target.value })}
-                              className="w-20 rounded-lg border border-slate-300 px-2 py-1"
+                              className="w-14 rounded-lg border border-slate-300 px-2 py-1 text-xs sm:w-20 sm:text-sm"
                             />
                           </div>
                         ) : (

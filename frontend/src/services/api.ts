@@ -46,6 +46,7 @@ export const studentAPI = {
   getAll: (params?: any) => api.get('/students', { params }),
   getById: (id: number) => api.get(`/students/${id}`),
   create: (data: any) => api.post('/students', data),
+  bulkCreate: (data: any) => api.post('/students/bulk', data),
   update: (id: number, data: any) => api.put(`/students/${id}`, data),
   delete: (id: number) => api.delete(`/students/${id}`),
   enroll: (data: any) => api.post('/students/enroll', data),
